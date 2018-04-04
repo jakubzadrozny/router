@@ -284,10 +284,6 @@ int main () {
 
     read_input();
 
-    fd_set descriptors;
-    FD_ZERO (&descriptors);
-    FD_SET (sockfd, &descriptors);
-
     timeval turn, start, curr, elapsed, left;
     turn.tv_sec = TURN_TIME;
     turn.tv_usec = 0;
@@ -297,13 +293,15 @@ int main () {
         gettimeofday(&start, NULL);
 
         while(left.tv_sec > 0 or (left.tv_sec == 0 and left.tv_usec > 0)) {
+            fd_set descriptors;
+            FD_ZERO (&descriptors);
+            FD_SET (sockfd, &descriptors);
+
             int ready = select (sockfd+1, &descriptors, NULL, NULL, &left);
             if (ready < 0) {
                 handle_error("select error", true);
             } else if (ready > 0) {
                 read_packets();
-            } else {
-                cout << "no packets\n";
             }
 
             gettimeofday(&curr, NULL);
