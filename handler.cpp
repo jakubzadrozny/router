@@ -10,7 +10,7 @@
 void handle_error(const std::string &msg, bool is_errno) {
     std::cerr << msg << "\n";
     if (is_errno) {
-        std::cerr << strerror(errno) << "\n";
+        std::cerr << std::strerror(errno) << "\n";
     }
     exit(EXIT_FAILURE);
 }
