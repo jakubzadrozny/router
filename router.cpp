@@ -144,7 +144,7 @@ void send_packets() {
         if(dist.size() > 0) {
             for(auto x : dist) {
                 auto t = x.first;
-                auto d = x.second.second;
+                auto d = x.second.first;
                 send_packet(dest, t, d);
                 // TO-DO: zatruwanie sciezek?
             }
@@ -238,6 +238,7 @@ void process_info() {
             not_heard[i] = 0;
         }
     }
+    heard[i] = false;
 }
 
 void print_info () {
