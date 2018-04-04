@@ -302,6 +302,8 @@ int main () {
                 handle_error("select error", true);
             } else if (ready > 0) {
                 read_packets();
+            } else {
+                cout << "no packets\n";
             }
 
             gettimeofday(&curr, NULL);
