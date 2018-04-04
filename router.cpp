@@ -173,6 +173,9 @@ void read_packets() {
         cidr_addr_t net_addr = {comp_addr, p};
 
         ip_addr_t neighbor_addr = ntohl(sender.sin_addr.s_addr);
+
+        if(order.count(neighbor_addr) == 0) continue;
+
         int ord = order[neighbor_addr];
         distance_t neighbor_d = neighbor_dist[ord];
 
