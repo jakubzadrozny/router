@@ -161,7 +161,7 @@ void read_packets() {
     u_int8_t buf[DGRAM_SIZE];
 
     while(true) {
-        auto dg_len = recvfrom(sockfd, buf, DGRAM_SIZE, 0,
+        auto dg_len = recvfrom(sockfd, buf, DGRAM_SIZE, MSG_DONTWAIT,
             (sockaddr*) &sender, &sender_len);
 
         if(dg_len < 0) return;
@@ -260,6 +260,7 @@ void print_info () {
             cout << " connected directly\n";
         }
     }
+    cout << "\n";
 }
 
 int main () {
