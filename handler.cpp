@@ -3,6 +3,8 @@
 
 #include <cstdlib>
 #include <cerrno>
+#include <cstring>
+#include <clocale>
 
 #include <iostream>
 #include <string>
