@@ -1,4 +1,4 @@
-CC = g++
+CC = c++
 CFLAGS = -std=c++11 -Wall -Wextra
 
 BIN = router
