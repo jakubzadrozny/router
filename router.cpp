@@ -237,8 +237,8 @@ void process_info() {
             }
             not_heard[i] = 0;
         }
+        heard[i] = false;
     }
-    heard[i] = false;
 }
 
 void print_info () {
