@@ -76,17 +76,24 @@ void print_vector () {
             auto d = x.second.first;
             auto via = x.second.second;
 
-            auto ip_str = str_to_ip(ip);
-            std::cout << ip_str << "/" << (unsigned int) p << " distance " << d;
+            auto ip_str = format_ip(ip);
+            std::cout << ip_str << "/" << (unsigned int) p;
+
+            if(d < INF) {
+                std::cout << " distance " << d;
+            } else {
+                std::cout << " unreachable ";
+            }
+
             if(via > 0) {
-                ip_str = str_to_ip(via);
+                ip_str = format_ip(via);
                 std::cout << " via " << ip_str << "\n";
             } else {
                 std::cout << " connected directly\n";
             }
         }
-        std::cout << "\n";
     } else {
         std::cout << "no connections\n";
     }
+    std::cout << "\n";
 }

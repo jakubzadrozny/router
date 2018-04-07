@@ -1,5 +1,4 @@
 #include <cstdlib>
-#include <cerrno>
 #include <cstring>
 #include <sys/select.h>
 #include <sys/time.h>
@@ -9,7 +8,6 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <map>
 #include <unordered_map>
 
 #include "consts.h"
@@ -53,7 +51,6 @@ void send_packets() {
                 if(send_packet(dest, target, d) < 0) {
                     silent[i] = ASSUME_DEAD_AFTER;
                 }
-                // TO-DO: zatruwanie sciezek?
             }
         } else {
             auto target = iface[i].net_cidr();
@@ -146,8 +143,10 @@ int main () {
         handle_error("socket error", true);
 	}
     int broadcastPermission = 1;
-    setsockopt(sockfd, SOL_SOCKET, SO_BROADCAST,
-        (void *) &broadcastPermission, sizeof(broadcastPermission));
+    if (setsockopt(sockfd, SOL_SOCKET, SO_BROADCAST,
+        (void *) &broadcastPermission, sizeof(broadcastPermission)) < 0) {
+        handle_error("socket error", true);
+    }
 
 	sockaddr_in server_address;
 	bzero (&server_address, sizeof(server_address));
