@@ -12,8 +12,8 @@ extern std::unordered_map<ip_addr_t, int>  interfaces[IP_ADDRLEN];
 extern distance_t  interface_dist[MAX_INTERFACES];
 
 int match_interface(ip_addr_t ip) {
-    int         match;
-    distance_t  d = INF;
+    int         match   = -1;
+    distance_t  d       = INF;
 
     for(prefix_t p = 1; p <= IP_ADDRLEN; p++) {
         auto mask       = generate_mask(p);
