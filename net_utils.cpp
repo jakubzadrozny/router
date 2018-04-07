@@ -2,6 +2,7 @@
 #include "utils.h"
 #include "consts.h"
 
+#include <cstring>
 #include <netinet/ip.h>
 #include <arpa/inet.h>
 
