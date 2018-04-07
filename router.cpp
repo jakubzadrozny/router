@@ -50,12 +50,16 @@ void send_packets() {
             for(auto x : dist) {
                 auto target = x.first;
                 auto d      = x.second.first;
-                send_packet(dest, target, d);
+                if(send_packet(dest, target, d) < 0) {
+                    silent[i] = ASSUME_DEAD_AFTER;
+                }
                 // TO-DO: zatruwanie sciezek?
             }
         } else {
             auto target = iface[i].net_cidr();
-            send_packet(dest, target, INF);
+            if(send_packet(dest, target, INF) < 0) {
+                silent[i] = ASSUME_DEAD_AFTER;
+            }
             // Bardzo dziwny graniczny przypadek
         }
     }

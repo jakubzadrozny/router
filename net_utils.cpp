@@ -43,7 +43,7 @@ char* str_to_ip (ip_addr_t ip) {
     return ip_str;
 }
 
-void send_packet (ip_addr_t dest, cidr_addr_t target, distance_t d) {
+ssize_t send_packet (ip_addr_t dest, cidr_addr_t target, distance_t d) {
     sockaddr_in addr;
     bzero(&addr, sizeof(addr));
     addr.sin_family = AF_INET;
@@ -54,7 +54,7 @@ void send_packet (ip_addr_t dest, cidr_addr_t target, distance_t d) {
     int_as_bytes(htonl(d), buf + 5);
     buf[4] = target.second;
 
-    sendto(sockfd, buf, DGRAM_SIZE, 0, (sockaddr*) &addr, sizeof(addr));
+    return sendto(sockfd, buf, DGRAM_SIZE, 0, (sockaddr*) &addr, sizeof(addr));
 }
 
 cidr_addr_t str_to_cidr (const std::string &cidr) {

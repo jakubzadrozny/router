@@ -10,7 +10,7 @@ struct packet {
     ip_addr_t   sender;
 };
 
-void        send_packet     (ip_addr_t dest, cidr_addr_t t, distance_t d);
+ssize_t     send_packet     (ip_addr_t dest, cidr_addr_t t, distance_t d);
 cidr_addr_t str_to_cidr     (const std::string &cidr);
 ssize_t     fetch_packet    (packet &p);
 char*       str_to_ip       (ip_addr_t ip);
