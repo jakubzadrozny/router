@@ -69,20 +69,24 @@ interface read_line () {
 }
 
 void print_vector () {
-    for(auto x : dist) {
-        auto ip = x.first.first;
-        auto p = x.first.second;
-        auto d = x.second.first;
-        auto via = x.second.second;
+    if(dist.size()) {
+        for(auto x : dist) {
+            auto ip = x.first.first;
+            auto p = x.first.second;
+            auto d = x.second.first;
+            auto via = x.second.second;
 
-        auto ip_str = str_to_ip(ip);
-        std::cout << ip_str << "/" << (unsigned int) p << " distance " << d;
-        if(via > 0) {
-            ip_str = str_to_ip(via);
-            std::cout << " via " << ip_str << "\n";
-        } else {
-            std::cout << " connected directly\n";
+            auto ip_str = str_to_ip(ip);
+            std::cout << ip_str << "/" << (unsigned int) p << " distance " << d;
+            if(via > 0) {
+                ip_str = str_to_ip(via);
+                std::cout << " via " << ip_str << "\n";
+            } else {
+                std::cout << " connected directly\n";
+            }
         }
+        std::cout << "\n";
+    } else {
+        std::cout << "no connections\n";
     }
-    std::cout << "\n";
 }
