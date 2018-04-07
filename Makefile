@@ -2,7 +2,7 @@ CC = c++
 CFLAGS = -std=c++11 -Wall -Wextra
 
 BIN = router
-OBJS = handler.o
+OBJS = utils.o net_utils.o handler.o
 
 $(BIN): $(OBJS) $(BIN).cpp
 	$(CC) $(CFLAGS) $(OBJS) $(BIN).cpp -o $(BIN)
