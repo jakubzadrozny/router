@@ -81,15 +81,14 @@ void print_vector () {
 
             if(d < INF) {
                 std::cout << " distance " << d;
+                if(via > 0) {
+                    ip_str = format_ip(via);
+                    std::cout << " via " << ip_str << "\n";
+                } else {
+                    std::cout << " connected directly\n";
+                }
             } else {
-                std::cout << " unreachable ";
-            }
-
-            if(via > 0) {
-                ip_str = format_ip(via);
-                std::cout << " via " << ip_str << "\n";
-            } else {
-                std::cout << " connected directly\n";
+                std::cout << " unreachable\n";
             }
         }
     } else {
