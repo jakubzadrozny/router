@@ -17,11 +17,11 @@ char*       str_to_ip       (ip_addr_t ip);
 bool        in_range        (ip_addr_t ip, cidr_addr_t net);
 
 inline ip_addr_t generate_mask (prefix_t pref) {
-    return ((1 << (pref + 1)) - 1) << (IP_ADDRLEN - pref);
+    return ((1 << pref) - 1) << (IP_ADDRLEN - pref);
 }
 
 inline ip_addr_t anti_mask (prefix_t pref) {
-    return (1 << (IP_ADDRLEN - pref + 1)) - 1;
+    return (1 << (IP_ADDRLEN - pref)) - 1;
 }
 
 #endif
