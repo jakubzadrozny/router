@@ -8,8 +8,8 @@
 extern std::unordered_map<cidr_addr_t, std::pair<distance_t, ip_addr_t>, pair_hash> dist;
 extern std::unordered_map<cidr_addr_t, int, pair_hash> time_left;
 
-extern std::unordered_map<ip_addr_t, int>  interfaces[IP_ADDRLEN];
-extern distance_t  interface_dist[MAX_INTERFACES];
+extern std::unordered_map<ip_addr_t, int>   ifaceM[IP_ADDRLEN];
+extern interface                            iface[MAX_INTERFACES];
 
 int match_interface(ip_addr_t ip) {
     int         match   = -1;
@@ -19,11 +19,11 @@ int match_interface(ip_addr_t ip) {
         auto mask       = generate_mask(p);
         auto ip_pref    = ip & mask;
 
-        auto it = interfaces[p].find(ip_pref);
-        if(it != interfaces[p].end()) {
+        auto it = ifaceM[p].find(ip_pref);
+        if(it != ifaceM[p].end()) {
             int cand = (*it).second;
-            if(interface_dist[cand] < d) {
-                d = interface_dist[cand];
+            if(iface[cand].dist < d) {
+                d = iface[cand].dist;
                 match = cand;
             }
         }
@@ -58,24 +58,14 @@ void set_dist(cidr_addr_t addr, distance_t d, ip_addr_t via) {
     }
 }
 
-line read_line () {
-    line        l;
-    std::string addr, ignore;
+interface read_line () {
+    std::string addr_s, ignore;
     distance_t  d;
 
-    std::cin >> addr >> ignore >> d;
+    std::cin >> addr_s >> ignore >> d;
 
-    auto aux    = str_to_cidr(addr);
-    auto ip     = aux.first;
-    auto pref   = aux.second;
-
-    ip_addr_t mask      = generate_mask(pref);
-    ip_addr_t net_ip    = ip & mask;
-
-    l.addr  = {net_ip, pref};
-    l.d     = d;
-
-    return l;
+    auto addr = str_to_cidr(addr_s);
+    return interface(addr, d);
 }
 
 void print_vector () {

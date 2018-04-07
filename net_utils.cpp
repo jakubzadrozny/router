@@ -43,22 +43,16 @@ char* str_to_ip (ip_addr_t ip) {
     return ip_str;
 }
 
-void send_packet (cidr_addr_t dest, cidr_addr_t t, distance_t d) {
-    auto f = dest.first;
-    auto p = dest.second;
-
-    ip_addr_t dest_ip = f + (1 << (IP_ADDRLEN - p)) - 1;
-
+void send_packet (ip_addr_t dest, cidr_addr_t target, distance_t d) {
     sockaddr_in addr;
     bzero(&addr, sizeof(addr));
     addr.sin_family = AF_INET;
-    addr.sin_addr.s_addr = htonl(dest_ip);
+    addr.sin_addr.s_addr = htonl(dest);
     addr.sin_port = htons(PORT);
 
-    u_int8_t buf[DGRAM_SIZE];
-    int_as_bytes(htonl(t.first), buf);
+    int_as_bytes(htonl(target.first), buf);
     int_as_bytes(htonl(d), buf + 5);
-    buf[4] = t.second;
+    buf[4] = target.second;
 
     sendto(sockfd, buf, DGRAM_SIZE, 0, (sockaddr*) &addr, sizeof(addr));
 }

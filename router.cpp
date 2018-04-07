@@ -23,32 +23,29 @@ size_t n;
 std::unordered_map<cidr_addr_t, std::pair<distance_t, ip_addr_t>, pair_hash> dist;
 std::unordered_map<cidr_addr_t, int, pair_hash> time_left;
 
-std::unordered_map<ip_addr_t, int>  interfaces[IP_ADDRLEN];
+std::unordered_map<ip_addr_t, int>  ifaceM[IP_ADDRLEN + 1];
 
-cidr_addr_t interface_addr[MAX_INTERFACES];
-distance_t  interface_dist[MAX_INTERFACES];
-int         not_heard[MAX_INTERFACES];
+interface   iface[MAX_INTERFACES];
+int         silent[MAX_INTERFACES];
 bool        heard[MAX_INTERFACES];
 
 void read_input() {
     std::cin >> n;
     for(size_t i = 0; i < n; i++) {
-        line l = read_line();
+        interface _iface = read_line();
+        iface[i] = _iface;
 
-        interface_addr[i] = l.addr;
-        interface_dist[i] = l.d;
+        auto ip     = _iface.net_ip();
+        auto pref   = _iface.pref();
+        ifaceM[pref][ip] = i;
 
-        auto ip     = l.addr.first;
-        auto pref   = l.addr.second;
-        interfaces[pref][ip] = i;
-
-        dist[l.addr] = {l.d, 0};
+        dist[_iface.net_cidr()] = {_iface.dist, 0};
     }
 }
 
 void send_packets() {
     for(size_t i = 0; i < n; i++) {
-        auto dest = interface_addr[i];
+        auto dest = iface[i].broadcast();
         if(dist.size() > 0) {
             for(auto x : dist) {
                 auto target = x.first;
@@ -57,7 +54,8 @@ void send_packets() {
                 // TO-DO: zatruwanie sciezek?
             }
         } else {
-            send_packet(dest, dest, INF);
+            auto target = iface[i].net_cidr();
+            send_packet(dest, target, INF);
             // Bardzo dziwny graniczny przypadek
         }
     }
@@ -67,13 +65,13 @@ void read_packets() {
     packet p;
     while(fetch_packet(p) > 0) {
 
-        int neigh = match_interface(p.sender);
-        if(neigh < 0) {
+        int i = match_interface(p.sender);
+        if(i < 0 or p.sender == iface[i].interface_ip()) {
             continue;
         }
 
-        heard[neigh] = true;
-        distance_t neigh_d = interface_dist[neigh];
+        heard[i] = true;
+        distance_t neigh_d = iface[i].dist;
 
         if(dist.count(p.addr) == 0) {
             set_dist(p.addr, p.d + neigh_d, p.sender);
@@ -111,13 +109,13 @@ void process_info() {
 
     for(size_t i = 0; i < n; i++) {
         if(!heard[i]) {
-            if(not_heard[i] == ASSUME_DEAD_AFTER) continue;
-            if(++not_heard[i] == ASSUME_DEAD_AFTER) {
-                auto addr   = interface_addr[i];
+            if(silent[i] == ASSUME_DEAD_AFTER) continue;
+            if(++silent[i] == ASSUME_DEAD_AFTER) {
+                auto addr = iface[i].net_cidr();
                 set_dist(addr, INF, 0);
 
                 for(auto x : dist) {
-                    auto via    = x.second.second;
+                    auto via = x.second.second;
                     if(in_range(via, addr)) {
                         auto target = x.first;
                         set_dist(target, INF, 0);
@@ -125,14 +123,14 @@ void process_info() {
                 }
             }
         } else {
-            if(not_heard[i] == ASSUME_DEAD_AFTER) {
-                auto addr = interface_addr[i];
-                if(dist.count(addr) == 0 or
-                    dist[addr].first >= interface_dist[i]) {
-                    dist[addr] = {interface_dist[i], 0};
+            if(silent[i] == ASSUME_DEAD_AFTER) {
+                auto addr = iface[i].net_cidr();
+                auto d    = iface[i].dist;
+                if(dist.count(addr) == 0 or dist[addr].first >= d) {
+                    dist[addr] = {d, 0};
                 }
             }
-            not_heard[i] = 0;
+            silent[i] = 0;
         }
         heard[i] = false;
     }
