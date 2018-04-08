@@ -88,26 +88,6 @@ void read_packets() {
 }
 
 void process_info() {
-    std::vector<cidr_addr_t>to_erase;
-    for(auto x : dist) {
-        auto addr = x.first;
-        auto d = x.second.first;
-
-        if(d == INF) {
-            int t = time_left[addr];
-            if(t == 0) {
-                time_left.erase(addr);
-                to_erase.push_back(addr);
-            } else {
-                time_left[addr] = t - 1;
-            }
-        }
-    }
-    while(to_erase.size()) {
-        dist.erase(to_erase.back());
-        to_erase.pop_back();
-    }
-
     for(size_t i = 0; i < n; i++) {
         if(!heard[i]) {
             if(silent[i] == ASSUME_DEAD_AFTER) continue;
@@ -134,6 +114,26 @@ void process_info() {
             silent[i] = 0;
         }
         heard[i] = false;
+    }
+
+    std::vector<cidr_addr_t>to_erase;
+    for(auto x : dist) {
+        auto addr = x.first;
+        auto d = x.second.first;
+
+        if(d == INF) {
+            int t = time_left[addr];
+            if(t == 0) {
+                time_left.erase(addr);
+                to_erase.push_back(addr);
+            } else {
+                time_left[addr] = t - 1;
+            }
+        }
+    }
+    while(to_erase.size()) {
+        dist.erase(to_erase.back());
+        to_erase.pop_back();
     }
 }
 

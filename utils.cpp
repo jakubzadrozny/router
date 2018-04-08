@@ -85,7 +85,11 @@ void print (cidr_addr_t net, distance_t d, ip_addr_t via) {
             std::cout << " connected directly\n";
         }
     } else {
-        std::cout << " unreachable\n";
+        std::cout << " unreachable";
+        if(via == 0) {
+            std::cout << " connected directly";
+        }
+        std::cout << "\n";
     }
 }
 
