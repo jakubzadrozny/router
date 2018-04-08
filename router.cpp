@@ -50,12 +50,14 @@ void send_packets() {
                 auto target = x.first;
                 auto d      = x.second.first;
                 if(send_packet(dest, target, d) < 0) {
+                    mark_dead(i);
                     silent[i] = ASSUME_DEAD_AFTER;
                 }
             }
         } else {
             auto target = iface[i].net_cidr();
             if(send_packet(dest, target, INF) < 0) {
+                mark_dead(i);
                 silent[i] = ASSUME_DEAD_AFTER;
             }
             // Bardzo dziwny graniczny przypadek
@@ -93,16 +95,7 @@ void process_info() {
         if(!heard[i]) {
             if(silent[i] == ASSUME_DEAD_AFTER) continue;
             if(++silent[i] == ASSUME_DEAD_AFTER) {
-                auto addr = iface[i].net_cidr();
-                set_dist(addr, INF, 0);
-
-                for(auto x : dist) {
-                    auto via = x.second.second;
-                    if(in_range(via, addr)) {
-                        auto target = x.first;
-                        set_dist(target, INF, 0);
-                    }
-                }
+                mark_dead(i);
             }
         } else {
             if(silent[i] == ASSUME_DEAD_AFTER) {

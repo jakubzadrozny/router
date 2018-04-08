@@ -61,5 +61,6 @@ void        print_vector    ();
 void        set_dist        (cidr_addr_t addr, distance_t d, ip_addr_t via);
 interface   read_line       ();
 int         match_interface (ip_addr_t ip);
+void        mark_dead       (size_t i);
 
 #endif

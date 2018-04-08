@@ -71,6 +71,19 @@ interface read_line () {
     return interface(addr, d);
 }
 
+void mark_dead (size_t i) {
+    auto addr = iface[i].net_cidr();
+    set_dist(addr, INF, 0);
+
+    for(auto x : dist) {
+        auto via = x.second.second;
+        if(in_range(via, addr)) {
+            auto target = x.first;
+            set_dist(target, INF, via);
+        }
+    }
+}
+
 void print (cidr_addr_t net, distance_t d, ip_addr_t via) {
     auto ip     = net.first;
     auto pref   = net.second;
