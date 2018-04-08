@@ -87,7 +87,7 @@ void print (cidr_addr_t net, distance_t d, ip_addr_t via) {
         }
     } else {
         std::cout << " unreachable";
-        if(via == 0) {
+        if(ifaceM[pref].count(ip) > 0) {
             std::cout << " connected directly";
         }
         std::cout << "\n";
