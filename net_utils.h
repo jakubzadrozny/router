@@ -20,8 +20,4 @@ inline ip_addr_t generate_mask (prefix_t pref) {
     return ((1 << pref) - 1) << (IP_ADDRLEN - pref);
 }
 
-inline ip_addr_t anti_mask (prefix_t pref) {
-    return (1 << (IP_ADDRLEN - pref)) - 1;
-}
-
 #endif

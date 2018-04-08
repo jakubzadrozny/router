@@ -35,7 +35,7 @@ struct interface {
 
     cidr_addr_t net_cidr () {
         auto ip = net_ip();
-        auto p  = pref();
+        auto p  = addr.second;
         return {ip, p};
     }
 
@@ -48,9 +48,9 @@ struct interface {
     }
 
     ip_addr_t broadcast () {
-        auto ip     = net_ip();
-        auto p      = pref();
-        auto mask   = anti_mask(p);
+        auto ip     = addr.first;
+        auto p      = addr.second;
+        auto mask   = ~generate_mask(p);
         return ip | mask;
     }
 };

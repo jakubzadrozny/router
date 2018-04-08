@@ -25,14 +25,18 @@ bool in_range (ip_addr_t ip, cidr_addr_t net) {
 }
 
 bool fetch_packet (packet &p) {
-    auto dg_len = recvfrom(sockfd, buf, DGRAM_SIZE, MSG_DONTWAIT,
-        (sockaddr*) &sender, &sender_len);
+    while(true) {
+        auto dg_len = recvfrom(sockfd, buf, DGRAM_SIZE, MSG_DONTWAIT,
+            (sockaddr*) &sender, &sender_len);
 
-    if(dg_len < 0) {
-        if(errno == EWOULDBLOCK) {
-            return false;
-        } else {
-            handle_error("socket error", true);
+        if(dg_len == DGRAM_SIZE) {
+            break;
+        } else if(dg_len < 0) {
+            if(errno == EWOULDBLOCK) {
+                return false;
+            } else {
+                handle_error("socket error", true);
+            }
         }
     }
 
