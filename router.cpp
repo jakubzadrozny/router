@@ -49,14 +49,14 @@ void send_packets() {
             for(auto x : dist) {
                 auto target = x.first;
                 auto d      = x.second.first;
-                if(send_packet(dest, target, d) < 0) {
+                if(send_packet(dest, target, d) < 0 and silent[i] < ASSUME_DEAD_AFTER) {
                     mark_dead(i);
                     silent[i] = ASSUME_DEAD_AFTER;
                 }
             }
         } else {
             auto target = iface[i].net_cidr();
-            if(send_packet(dest, target, INF) < 0) {
+            if(send_packet(dest, target, INF) < 0 and silent[i] < ASSUME_DEAD_AFTER) {
                 mark_dead(i);
                 silent[i] = ASSUME_DEAD_AFTER;
             }
