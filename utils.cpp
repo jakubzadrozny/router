@@ -11,6 +11,8 @@ extern std::unordered_map<cidr_addr_t, int, pair_hash> time_left;
 extern std::unordered_map<ip_addr_t, int>   ifaceM[IP_ADDRLEN];
 extern interface                            iface[MAX_INTERFACES];
 
+extern size_t n;
+
 int match_interface(ip_addr_t ip) {
     int         match   = -1;
     distance_t  d       = INF;
@@ -36,7 +38,7 @@ void int_as_bytes(u_int32_t value, u_int8_t *buf) {
     buf[0] = value >> 24;
     buf[1] = value >> 16;
     buf[2] = value >> 8;
-    buf[3]= value;
+    buf[3] = value;
 }
 
 u_int32_t bytes_to_int (u_int8_t *buf) {
@@ -68,31 +70,41 @@ interface read_line () {
     return interface(addr, d);
 }
 
-void print_vector () {
-    if(dist.size()) {
-        for(auto x : dist) {
-            auto ip = x.first.first;
-            auto p = x.first.second;
-            auto d = x.second.first;
-            auto via = x.second.second;
+void print (cidr_addr_t net, distance_t d, ip_addr_t via) {
+    auto ip     = net.first;
+    auto pref   = net.second;
+    auto ip_str = format_ip(ip);
 
-            auto ip_str = format_ip(ip);
-            std::cout << ip_str << "/" << (unsigned int) p;
-
-            if(d < INF) {
-                std::cout << " distance " << d;
-                if(via > 0) {
-                    ip_str = format_ip(via);
-                    std::cout << " via " << ip_str << "\n";
-                } else {
-                    std::cout << " connected directly\n";
-                }
-            } else {
-                std::cout << " unreachable\n";
-            }
+    std::cout << ip_str << "/" << (unsigned int) pref;
+    if(d < INF) {
+        std::cout << " distance " << d;
+        if(via > 0) {
+            ip_str = format_ip(via);
+            std::cout << " via " << ip_str << "\n";
+        } else {
+            std::cout << " connected directly\n";
         }
     } else {
-        std::cout << "no connections\n";
+        std::cout << " unreachable\n";
     }
+}
+
+void print_neighbors () {
+    for(size_t i = 0; i < n; i++) {
+        auto net = iface[i].net_cidr();
+        if(dist.count(net) == 0) {
+            print(net, INF, 0);
+        }
+    }
+}
+
+void print_vector () {
+    for(auto x : dist) {
+        auto net    = x.first;
+        auto d      = x.second.first;
+        auto via    = x.second.second;
+        print(net, d, via);
+    }
+    print_neighbors();
     std::cout << "\n";
 }
