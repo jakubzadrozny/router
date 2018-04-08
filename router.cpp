@@ -1,3 +1,4 @@
+// Jakub Zadrozny 290920
 #include <cstdlib>
 #include <cstring>
 #include <sys/select.h>
